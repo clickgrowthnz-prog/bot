@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IROTECH · Real Python Bot Hosting Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #0f1422 100%);
+            font-family: 'Inter', sans-serif;
+            color: #eef2ff;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 20, 35, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(68, 187, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .logo i {
+            color: #2cc5ff;
+            font-size: 2rem;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, #fff, #2cc5ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+        }
+
+        .stat-item i {
+            color: #2cc5ff;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: linear-gradient(135deg, rgba(44, 197, 255, 0.1), rgba(44, 197, 255, 0.02));
+            border: 2px dashed rgba(44, 197, 255, 0.4);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #2cc5ff;
+            background: rgba(44, 197, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #2cc5ff;
+            margin-bottom: 1rem;
+        }
+
+        .upload-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-section p {
+            color: #8b93b0;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(18, 24, 38, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(68, 187, 255, 0.15);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.2rem 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .card-header i {
+            color: #2cc5ff;
+            font-size: 1.3rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Bot List */
+        .bot-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .bot-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+
+        .bot-item:hover {
+            background: rgba(44, 197, 255, 0.1);
+        }
+
+        .bot-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .bot-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 1rem;
+            display: inline-block;
+        }
+
+        .status-running {
+            background: #00a86b20;
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+        }
+
+        .status-stopped {
+            background: #ff444420;
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+        }
+
+        .bot-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: #b9c8ff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 0.5rem;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(68, 187, 255, 0.2);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Logs Panel */
+        .logs-panel {
+            background: #03050c;
+            border-radius: 1rem;
+            padding: 1rem;
+            height: 500px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+        }
+
+        .log-line {
+            padding: 0.3rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #a0b3d9;
+        }
+
+        .log-time {
+            color: #2cc5ff;
+            margin-right: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6c7a9e;
+            padding: 2rem;
+        }
+
+        /* Control Buttons */
+        .control-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.8rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(95deg, #0e8fcd, #2cc5ff);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffaa33;
+            color: #1a1a2e;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1a2744;
+            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            border-left: 4px solid #2cc5ff;
+            animation: slideIn 0.3s;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .header-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fab fa-python"></i>
+                <span>IROTECH Cloud</span>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-server"></i>
+                    <span>Host: <strong id="botCount">0</strong> Bots</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Uptime: 99.9%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="upload-section" id="uploadZone">
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3>Upload Your Python Bot</h3>
+            <p>Support .py or .zip files (Max 10MB)</p>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem;">⬅️ Click here to select file</p>
+            <input type="file" id="fileInput" accept=".py,.zip" style="display: none;">
+        </div>
+
+        <div class="dashboard">
+            <!-- Left: Bot Management -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-robot"></i>
+                    <span>Your Deployed Bots</span>
+                </div>
+                <div class="card-body">
+                    <div class="control-buttons">
+                        <button class="btn btn-primary" id="startAllBtn">
+                            <i class="fas fa-play"></i> Start All
+                        </button>
+                        <button class="btn btn-danger" id="stopAllBtn">
+                            <i class="fas fa-stop"></i> Stop All
+                        </button>
+                        <button class="btn btn-warning" id="refreshBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="botList" class="bot-list">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                            <p>No bots deployed yet</p>
+                            <p style="font-size: 0.85rem;">Upload a Python file to start hosting</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Live Logs -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-terminal"></i>
+                    <span>Live Console Logs</span>
+                    <span style="margin-left: auto; font-size: 0.7rem;" id="selectedBotName"></span>
+                </div>
+                <div class="card-body">
+                    <div class="logs-panel" id="logsPanel">
+                        <div class="log-line">
+                            <span class="log-time">[System]</span> Ready to host Python bots
+                        </div>
+                        <div class="log-line">
+                            <span class="log-time">[System]</span> Upload a .py file to get started
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentBotId = null;
+        let logInterval = null;
+
+        // Show toast notification
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Load bots from server
+        async function loadBots() {
+            try {
+                const response = await fetch(`${API_URL}/bots`);
+                const bots = await response.json();
+                renderBotList(bots);
+                document.getElementById('botCount').textContent = bots.length;
+                return bots;
+            } catch (error) {
+                console.error('Error loading bots:', error);
+                showToast('Failed to connect to server', true);
+                return [];
+            }
+        }
+
+        // Render bot list
+        function renderBotList(bots) {
+            const container = document.getElementById('botList');
+            if (!bots.length) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>No bots deployed yet</p>
+                        <p style="font-size: 0.85rem;">Upload a Python file to start hosting</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = bots.map(bot => `
+                <div class="bot-item">
+                    <div class="bot-info">
+                        <h4><i class="fab fa-python"></i> ${escapeHtml(bot.name)}</h4>
+                        <span class="bot-status ${bot.status === 'running' ? 'status-running' : 'status-stopped'}">
+                            ${bot.status === 'running' ? '🟢 Running' : '⚫ Stopped'}
+                        </span>
+                        <div style="font-size: 0.7rem; color: #6c7a9e; margin-top: 0.2rem;">
+                            ${bot.type === 'py' ? 'Python Script' : 'Zip Archive'}
+                        </div>
+                    </div>
+                    <div class="bot-actions">
+                        <button class="icon-btn" onclick="startBot('${bot.id}')" title="Start">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="icon-btn" onclick="stopBot('${bot.id}')" title="Stop">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                        <button class="icon-btn" onclick="viewLogs('${bot.id}', '${escapeHtml(bot.name)}')" title="Logs">
+                            <i class="fas fa-scroll"></i>
+                        </button>
+                        <button class="icon-btn" onclick="deleteBot('${bot.id}')" title="Delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Start bot
+        async function startBot(botId) {
+            try {
+                const response = await fetch(`${API_URL}/start/${botId}`, { method: 'POST' });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Bot started successfully');
+                    loadBots();
+                    if (currentBotId === botId) {
+                        startLogPolling(botId);
+                    }
+                } else {
+                    showToast(result.error || 'Failed to start bot', true);
+                }
+            } catch (error) {
+                showToast('Error starting bot', true);
+            }
+        }
+
+        // Stop bot
+        async function stopBot(botId) {
+            try {
+                const response = await fetch(`${API_URL}/stop/${botId}`, { method: 'POST' });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Bot stopped');
+                    loadBots();
+                } else {
+                    showToast(result.error || 'Failed to stop bot', true);
+                }
+            } catch (error) {
+                showToast('Error stopping bot', true);
+            }
+        }
+
+        // Delete bot
+        async function deleteBot(botId) {
+            if (!confirm('Are you sure you want to delete this bot?')) return;
+            try {
+                const response = await fetch(`${API_URL}/delete/${botId}`, { method: 'DELETE' });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Bot deleted');
+                    if (currentBotId === botId) {
+                        currentBotId = null;
+                        document.getElementById('selectedBotName').textContent = '';
+                        document.getElementById('logsPanel').innerHTML = `
+                            <div class="log-line">
+                                <span class="log-time">[System]</span> No bot selected
+                            </div>
+                        `;
+                        if (logInterval) clearInterval(logInterval);
+                    }
+                    loadBots();
+                }
+            } catch (error) {
+                showToast('Error deleting bot', true);
+            }
+        }
+
+        // View logs
+        function viewLogs(botId, botName) {
+            currentBotId = botId;
+            document.getElementById('selectedBotName').textContent = `Viewing: ${botName}`;
+            startLogPolling(botId);
+        }
+
+        // Start polling logs
+        function startLogPolling(botId) {
+            if (logInterval) clearInterval(logInterval);
+            fetchLogs(botId);
+            logInterval = setInterval(() => fetchLogs(botId), 2000);
+        }
+
+        // Fetch logs from server
+        async function fetchLogs(botId) {
+            try {
+                const response = await fetch(`${API_URL}/logs/${botId}`);
+                const data = await response.json();
+                const logsPanel = document.getElementById('logsPanel');
+                
+                if (data.logs) {
+                    const lines = data.logs.split('\n').filter(l => l.trim());
+                    if (lines.length === 0) {
+                        logsPanel.innerHTML = '<div class="log-line"><span class="log-time">[System]</span> No logs yet. Start the bot to see output.</div>';
+                    } else {
+                        logsPanel.innerHTML = lines.slice(-100).map(line => {
+                            const match = line.match(/\[([^\]]+)\]/);
+                            const time = match ? match[1] : 'System';
+                            const content = line.replace(/\[[^\]]+\]/, '').trim();
+                            return `<div class="log-line"><span class="log-time">[${time}]</span> ${escapeHtml(content)}</div>`;
+                        }).join('');
+                    }
+                }
+                logsPanel.scrollTop = logsPanel.scrollHeight;
+            } catch (error) {
+                console.error('Error fetching logs:', error);
+            }
+        }
+
+        // Upload file
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            showToast('Uploading...');
+            
+            try {
+                const response = await fetch(`${API_URL}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('File uploaded successfully!');
+                    loadBots();
+                } else {
+                    showToast(result.error || 'Upload failed', true);
+                }
+            } catch (error) {
+                showToast('Upload failed', true);
+            }
+        }
+
+        // Start all bots
+        async function startAllBots() {
+            const bots = await loadBots();
+            for (const bot of bots) {
+                if (bot.status !== 'running') {
+                    await startBot(bot.id);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+            showToast('Started all bots');
+        }
+
+        // Stop all bots
+        async function stopAllBots() {
+            const bots = await loadBots();
+            for (const bot of bots) {
+                if (bot.status === 'running') {
+                    await stopBot(bot.id);
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+            }
+            showToast('Stopped all bots');
+        }
+
+        // Event listeners
+        document.getElementById('uploadZone').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+        
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                uploadFile(e.target.files[0]);
+            }
+            e.target.value = '';
+        });
+        
+        document.getElementById('startAllBtn').addEventListener('click', startAllBots);
+        document.getElementById('stopAllBtn').addEventListener('click', stopAllBots);
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            loadBots();
+            if (currentBotId) fetchLogs(currentBotId);
+            showToast('Refreshed');
+        });
+
+        // Initial load
+        loadBots();
+    </script>
+</body>
+</html>
